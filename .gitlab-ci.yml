@@ -1,0 +1,42 @@
+# .gitlab-ci.yml
+
+include:
+  - local: .gitlab/ci/lint.yml
+
+# Stages déclarés dans leur ordre final.
+# Seuls verify et lint sont actifs à ce stade —
+# les autres stages seront peuplés progressivement dans les parties suivantes.
+stages:
+  - verify
+  - lint
+  - test
+  - metrics
+  - security
+  - build
+  - deploy
+
+default:
+  image: node:20-alpine
+  # Cache des node_modules entre les jobs — évite un npm ci complet à chaque job
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+  before_script:
+    - npm ci
+
+# ── Vérification de structure ─────────────────────────────────────────────────
+verify:structure:
+  stage: verify
+  script:
+    - test -d app/api || (echo "ERREUR app/api manquant" && exit 1)
+    - test -d components || (echo "ERREUR components manquant" && exit 1)
+    - test -d lib/tmdb || (echo "ERREUR lib/tmdb manquant" && exit 1)
+    - test -d lib/db || (echo "ERREUR lib/db manquant" && exit 1)
+    - test -d constants || (echo "ERREUR constants manquant" && exit 1)
+    - echo "Structure valide"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
