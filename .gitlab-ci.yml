@@ -33,7 +33,7 @@ verify:structure:
   script:
     - test -d app/api || (echo "ERREUR app/api manquant" && exit 1)
     - test -d components || (echo "ERREUR components manquant" && exit 1)
-    - test -d lib/tmdb || (echo "ERREUR lib/tmdb manquant" && exit 1)
+    - test -d lib/tsdb || (echo "ERREUR lib/tmdb manquant" && exit 1)
     - test -d lib/db || (echo "ERREUR lib/db manquant" && exit 1)
     - test -d constants || (echo "ERREUR constants manquant" && exit 1)
     - echo "Structure valide"
