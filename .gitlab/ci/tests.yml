@@ -1,0 +1,29 @@
+# .gitlab/ci/tests.yml
+
+# ── Tests unitaires ───────────────────────────────────────────────────────────
+
+test:unit:frontend:
+  stage: test
+  script:
+    - npm run test:unit -- --testPathPatterns='components'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+
+test:unit:backend:
+  stage: test
+  script:
+    - npm run test:unit -- --testPathPatterns='lib/(db|tmdb)'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+
+# ── Tests d'intégration ───────────────────────────────────────────────────────
+
+test:integration:
+  stage: test
+  script:
+    - npm run test:integration
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
