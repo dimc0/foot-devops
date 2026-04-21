@@ -4,9 +4,9 @@ import { useEffect, useState } from "react"
 import MatchCard from "./MatchCard"
 
 export default function FavoriteList() {
-  const [favorites, setFavorites] = useState([])
+  const [favorites, setFavorites] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetch("/api/favorites")
@@ -15,11 +15,11 @@ export default function FavoriteList() {
         return res.json()
       })
       .then((data) => setFavorites(data))
-      .catch((err) => setError(err.message))
+      .catch((err: any) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
 
-  async function handleRemoveFavorite(matchId) {
+  async function handleRemoveFavorite(matchId: number) {
     setError(null)
 
     try {
@@ -30,15 +30,16 @@ export default function FavoriteList() {
       }
 
       setFavorites((current) =>
-        current.filter((match) => match.match_id !== matchId)
+        current.filter((match: any) => match.match_id !== matchId)
       )
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
     }
   }
 
   if (loading) return <p className="text-gray-500">Chargement de vos favoris...</p>
   if (error) return <p className="text-red-500">{error}</p>
+
   if (favorites.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center text-gray-600">
@@ -49,7 +50,7 @@ export default function FavoriteList() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {favorites.map((match) => (
+      {favorites.map((match: any) => (
         <MatchCard
           key={match.match_id}
           match={match}

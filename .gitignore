@@ -43,3 +43,8 @@ next-env.d.ts
 reports/
 .stryker-tmp/
 .vercel
+
+coverage/
+
+reports/
+.stryker-tmp/

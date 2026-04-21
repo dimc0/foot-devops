@@ -1,13 +1,12 @@
-// components/matches/MatchesClient.jsx
 "use client"
 import { useEffect, useState } from "react"
 import MatchCard from "./MatchCard"
 
 export default function MatchesClient() {
-  const [matches, setMatches] = useState([])
-  const [favoriteIds, setFavoriteIds] = useState([])
+  const [matches, setMatches] = useState<any[]>([])
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function loadData() {
@@ -31,8 +30,8 @@ export default function MatchesClient() {
         const favoritesData = await favoritesResponse.json()
 
         setMatches(matchesData)
-        setFavoriteIds(favoritesData.map((favorite) => favorite.match_id))
-      } catch (err) {
+        setFavoriteIds(favoritesData.map((favorite: any) => favorite.match_id))
+      } catch (err: any) {
         setError(err.message)
       } finally {
         setLoading(false)
@@ -42,7 +41,7 @@ export default function MatchesClient() {
     loadData()
   }, [])
 
-  async function handleAddFavorite(matchId) {
+  async function handleAddFavorite(matchId: number) {
     setError(null)
 
     try {
@@ -57,12 +56,12 @@ export default function MatchesClient() {
       setFavoriteIds((current) =>
         current.includes(matchId) ? current : [...current, matchId]
       )
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
     }
   }
 
-  async function handleRemoveFavorite(matchId) {
+  async function handleRemoveFavorite(matchId: number) {
     setError(null)
 
     try {
@@ -75,7 +74,7 @@ export default function MatchesClient() {
       }
 
       setFavoriteIds((current) => current.filter((id) => id !== matchId))
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
     }
   }
@@ -85,7 +84,7 @@ export default function MatchesClient() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {matches.map((match) => (
+      {matches.map((match: any) => (
         <MatchCard
           key={match.id}
           match={match}

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import MatchesClient from "@/components/matches/MatchesClient.jsx"
+import MatchesClient from "@/components/matches/MatchesClient.tsx"
 
 export default function MatchesPage() {
   return (

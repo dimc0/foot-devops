@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test:unit": "jest --testPathPatterns=\"(components|lib)\"",
-    "test:integration": "jest --testPathPatterns=\"app/api\""
+    "test:integration": "jest --testPathPatterns=\"app/api\"",
+    "test:coverage": "jest --coverage",
+    "test:mutation": "stryker run stryker.config.json"
   },
   "dependencies": {
     "@libsql/client": "^0.17.2",
@@ -17,6 +19,8 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/jest-runner": "^9.6.1",
     "@swc/core": "^1.15.30",
     "@swc/jest": "^0.2.39",
     "@tailwindcss/postcss": "^4",

@@ -1,0 +1,37 @@
+
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "jest",
+  "coverageAnalysis": "off",
+  "jest": {
+    "projectType": "custom",
+    "configFile": "jest.config.js",
+    "enableFindRelatedTests": false,
+    "config": {
+      "moduleNameMapper": {
+        "^@/(.*)$": "<rootDir>/$1"
+      }
+    }
+  },
+  "mutate": [
+    "lib/db/favorites.ts",
+    "lib/tmdb/client.ts",
+    "app/api/favorites/route.ts",
+    "app/api/favorites/[movieId]/route.ts",
+    "app/api/movies/route.ts",
+    "app/api/health/route.ts"
+  ],
+  "reporters": ["html", "clear-text", "progress"],
+  "htmlReporter": {
+    "fileName": "reports/mutation/index.html"
+  },
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": 60
+  },
+  "timeoutMS": 90000,
+  "concurrency": 1,
+  "tempDirName": "stryker-tmp",
+  "cleanTempDir": true
+}

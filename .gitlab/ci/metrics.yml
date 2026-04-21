@@ -1,0 +1,40 @@
+# .gitlab/ci/metrics.yml
+
+# ── Coverage ──────────────────────────────────────────────────────────────────
+
+coverage:
+  stage: metrics
+  script:
+    - npm run test:coverage
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+  # Extraction du pourcentage de lignes pour l'affichage GitLab
+  coverage: '/Lines\s*:\s*(\d+\.?\d*)%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    paths:
+      - coverage/lcov-report/
+    expire_in: 7 days
+  # allow_failure: true permet de voir le rapport sans bloquer le pipeline
+  # Retirer cette option une fois les seuils atteints
+  allow_failure: true
+
+# ── Mutation ──────────────────────────────────────────────────────────────────
+
+mutation:
+  stage: metrics
+  script:
+    - npm run test:mutation
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+  artifacts:
+    when: always
+    paths:
+      - reports/mutation/
+    expire_in: 7 days
+  allow_failure: true

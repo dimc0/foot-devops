@@ -1,5 +1,5 @@
 import Link from "next/link"
-import FavoriteList from "@/components/matches/FavoriteList.jsx"
+import FavoriteList from "@/components/matches/FavoriteList.tsx"
 
 export default function FavoritesPage() {
   return (

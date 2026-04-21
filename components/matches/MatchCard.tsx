@@ -1,10 +1,21 @@
 import Image from "next/image"
 
-export default function MatchCard({ match, buttonText, onButtonClick }) {
+type MatchCardProps = {
+  match: any
+  buttonText: string
+  onButtonClick: () => void
+}
+
+export default function MatchCard({
+  match,
+  buttonText,
+  onButtonClick,
+}: MatchCardProps) {
   const time = new Date(match.utcDate).toLocaleTimeString("fr-FR", {
     hour: "2-digit",
     minute: "2-digit",
   })
+
   const showScore =
     match.status === "FINISHED" || match.status === "IN_PLAY"
 
