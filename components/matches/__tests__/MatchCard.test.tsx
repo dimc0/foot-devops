@@ -1,11 +1,23 @@
-// components/__tests__/MatchCard.test.tsx
-
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import MatchCard from "../MatchCard"
 
-const mockMatch = {
-  match_id: 1,
+type MockMatch = {
+  id: number
+  utcDate: string
+  status: string
+  homeTeam: { name: string; crest: string }
+  awayTeam: { name: string; crest: string }
+  score: {
+    fullTime: {
+      home: number
+      away: number
+    }
+  }
+}
+
+const mockMatch: MockMatch = {
+  id: 1,
   utcDate: "2024-01-15T20:00:00Z",
   status: "TIMED",
   homeTeam: {
@@ -17,7 +29,7 @@ const mockMatch = {
     crest: "/real.png",
   },
   score: {
-    fullTime: { home: null, away: null },
+    fullTime: { home: 0, away: 0 },
   },
 }
 
@@ -47,11 +59,12 @@ describe("MatchCard", () => {
   })
 
   it("affiche le score si le statut est FINISHED", () => {
-    const matchFinished = {
+    const matchFinished: MockMatch = {
       ...mockMatch,
       status: "FINISHED",
       score: { fullTime: { home: 2, away: 1 } },
     }
+
     render(
       <MatchCard
         match={matchFinished}
@@ -59,15 +72,17 @@ describe("MatchCard", () => {
         onButtonClick={jest.fn()}
       />
     )
+
     expect(screen.getByText("2 - 1")).toBeInTheDocument()
   })
 
   it("affiche le score si le statut est IN_PLAY", () => {
-    const matchInPlay = {
+    const matchInPlay: MockMatch = {
       ...mockMatch,
       status: "IN_PLAY",
       score: { fullTime: { home: 0, away: 0 } },
     }
+
     render(
       <MatchCard
         match={matchInPlay}
@@ -75,6 +90,7 @@ describe("MatchCard", () => {
         onButtonClick={jest.fn()}
       />
     )
+
     expect(screen.getByText("0 - 0")).toBeInTheDocument()
   })
 
@@ -86,6 +102,7 @@ describe("MatchCard", () => {
         onButtonClick={jest.fn()}
       />
     )
+
     expect(
       screen.getByRole("button", { name: /supprimer des favoris/i })
     ).toBeInTheDocument()

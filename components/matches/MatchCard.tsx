@@ -1,7 +1,25 @@
 import Image from "next/image"
 
+type Team = {
+  name: string
+  crest: string
+}
+
+type Match = {
+  utcDate: string
+  status: string
+  homeTeam: Team
+  awayTeam: Team
+  score?: {
+    fullTime?: {
+      home: number
+      away: number
+    }
+  }
+}
+
 type MatchCardProps = {
-  match: any
+  match: Match
   buttonText: string
   onButtonClick: () => void
 }
@@ -38,7 +56,7 @@ export default function MatchCard({
         <div className="flex flex-col items-center gap-1 flex-1">
           {showScore ? (
             <p className="text-xl font-bold text-gray-900">
-              {match.score.fullTime.home} - {match.score.fullTime.away}
+              {match.score?.fullTime?.home ?? 0} - {match.score?.fullTime?.away ?? 0}
             </p>
           ) : (
             <p className="text-sm font-medium text-gray-500">{time}</p>

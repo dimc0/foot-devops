@@ -2,15 +2,24 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import MatchesClient from "../MatchesClient"
 
-// Mock MatchCard (on s’en fiche du rendu interne)
-jest.mock("../MatchCard", () => (props: any) => (
-  <div>
-    <p>{props.match.id}</p>
-    <button onClick={props.onButtonClick}>
-      {props.buttonText}
-    </button>
-  </div>
-))
+type MatchCardMockProps = {
+  match: { id: number }
+  buttonText: string
+  onButtonClick: () => void
+}
+
+function MockMatchCard(props: MatchCardMockProps) {
+  return (
+    <div>
+      <p>{props.match.id}</p>
+      <button onClick={props.onButtonClick}>{props.buttonText}</button>
+    </div>
+  )
+}
+
+MockMatchCard.displayName = "MockMatchCard"
+
+jest.mock("../MatchCard", () => MockMatchCard)
 
 describe("MatchesClient", () => {
   beforeEach(() => {
@@ -18,7 +27,7 @@ describe("MatchesClient", () => {
   })
 
   it("affiche le loading initialement", () => {
-    global.fetch = jest.fn(() => new Promise(() => {})) as any
+    global.fetch = jest.fn(() => new Promise(() => {})) as typeof fetch
 
     render(<MatchesClient />)
 
@@ -146,7 +155,7 @@ describe("MatchesClient", () => {
   it("affiche une erreur si API fail", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({ ok: false })
-    ) as any
+    ) as unknown as typeof fetch
 
     render(<MatchesClient />)
 

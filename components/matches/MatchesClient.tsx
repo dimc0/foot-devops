@@ -1,9 +1,28 @@
 "use client"
+
 import { useEffect, useState } from "react"
 import MatchCard from "./MatchCard"
 
+type Match = {
+  id: number
+  utcDate: string
+  status: string
+  homeTeam: { name: string; crest: string }
+  awayTeam: { name: string; crest: string }
+  score?: {
+    fullTime?: {
+      home: number
+      away: number
+    }
+  }
+}
+
+type Favorite = {
+  match_id: number
+}
+
 export default function MatchesClient() {
-  const [matches, setMatches] = useState<any[]>([])
+  const [matches, setMatches] = useState<Match[]>([])
   const [favoriteIds, setFavoriteIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,13 +45,15 @@ export default function MatchesClient() {
           throw new Error("Erreur lors de la récupération des favoris")
         }
 
-        const matchesData = await matchesResponse.json()
-        const favoritesData = await favoritesResponse.json()
+        const matchesData: Match[] = await matchesResponse.json()
+        const favoritesData: Favorite[] = await favoritesResponse.json()
 
         setMatches(matchesData)
-        setFavoriteIds(favoritesData.map((favorite: any) => favorite.match_id))
-      } catch (err: any) {
-        setError(err.message)
+        setFavoriteIds(favoritesData.map((favorite) => favorite.match_id))
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message)
+        }
       } finally {
         setLoading(false)
       }
@@ -56,8 +77,10 @@ export default function MatchesClient() {
       setFavoriteIds((current) =>
         current.includes(matchId) ? current : [...current, matchId]
       )
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message)
+      }
     }
   }
 
@@ -74,8 +97,10 @@ export default function MatchesClient() {
       }
 
       setFavoriteIds((current) => current.filter((id) => id !== matchId))
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message)
+      }
     }
   }
 
@@ -84,7 +109,7 @@ export default function MatchesClient() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {matches.map((match: any) => (
+      {matches.map((match) => (
         <MatchCard
           key={match.id}
           match={match}

@@ -3,8 +3,28 @@
 import { useEffect, useState } from "react"
 import MatchCard from "./MatchCard"
 
+type FavoriteMatch = {
+  match_id: number
+  utcDate: string
+  status: string
+  homeTeam: {
+    name: string
+    crest: string
+  }
+  awayTeam: {
+    name: string
+    crest: string
+  }
+  score?: {
+    fullTime?: {
+      home: number
+      away: number
+    }
+  }
+}
+
 export default function FavoriteList() {
-  const [favorites, setFavorites] = useState<any[]>([])
+  const [favorites, setFavorites] = useState<FavoriteMatch[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -14,8 +34,8 @@ export default function FavoriteList() {
         if (!res.ok) throw new Error("Erreur lors de la récupération des favoris")
         return res.json()
       })
-      .then((data) => setFavorites(data))
-      .catch((err: any) => setError(err.message))
+      .then((data: FavoriteMatch[]) => setFavorites(data))
+      .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
 
@@ -23,17 +43,21 @@ export default function FavoriteList() {
     setError(null)
 
     try {
-      const res = await fetch(`/api/favorites/${matchId}`, { method: "DELETE" })
+      const res = await fetch(`/api/favorites/${matchId}`, {
+        method: "DELETE",
+      })
 
       if (!res.ok && res.status !== 404) {
         throw new Error("Impossible de supprimer ce favori")
       }
 
       setFavorites((current) =>
-        current.filter((match: any) => match.match_id !== matchId)
+        current.filter((match) => match.match_id !== matchId)
       )
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message)
+      }
     }
   }
 
@@ -50,7 +74,7 @@ export default function FavoriteList() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {favorites.map((match: any) => (
+      {favorites.map((match) => (
         <MatchCard
           key={match.match_id}
           match={match}

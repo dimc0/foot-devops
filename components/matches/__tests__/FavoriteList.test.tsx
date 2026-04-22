@@ -2,7 +2,22 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import FavoriteList from "../FavoriteList"
 
-const mockFavorites: any[] = [
+type FavoriteMatch = {
+  match_id: number
+  utcDate: string
+  status: string
+  homeTeam: { name: string; crest: string }
+  awayTeam: { name: string; crest: string }
+  score: { fullTime: { home: number; away: number } }
+}
+
+type MockResponse = {
+  ok: boolean
+  status?: number
+  json?: () => Promise<FavoriteMatch[]>
+}
+
+const mockFavorites: FavoriteMatch[] = [
   {
     match_id: 1,
     utcDate: "2024-01-15T20:00:00Z",
@@ -19,7 +34,7 @@ describe("FavoriteList", () => {
   })
 
   it("affiche le message de chargement initialement", () => {
-    global.fetch = jest.fn(() => new Promise(() => {})) as any
+    global.fetch = jest.fn(() => new Promise(() => {})) as typeof fetch
 
     render(<FavoriteList />)
     expect(screen.getByText("Chargement de vos favoris...")).toBeInTheDocument()
@@ -27,8 +42,8 @@ describe("FavoriteList", () => {
 
   it("affiche le message vide quand la liste est vide", async () => {
     global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve([]) })
-    ) as any
+      Promise.resolve({ ok: true, json: () => Promise.resolve([]) } as MockResponse)
+    ) as unknown as typeof fetch
 
     render(<FavoriteList />)
 
@@ -41,8 +56,11 @@ describe("FavoriteList", () => {
 
   it("affiche les équipes du match favori", async () => {
     global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve(mockFavorites) })
-    ) as any
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockFavorites),
+      } as MockResponse)
+    ) as unknown as typeof fetch
 
     render(<FavoriteList />)
 
@@ -54,8 +72,8 @@ describe("FavoriteList", () => {
 
   it("affiche un message d'erreur si le fetch échoue", async () => {
     global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: false })
-    ) as any
+      Promise.resolve({ ok: false } as MockResponse)
+    ) as unknown as typeof fetch
 
     render(<FavoriteList />)
 
@@ -69,7 +87,7 @@ describe("FavoriteList", () => {
   it("supprime le match de la liste au clic sur le bouton", async () => {
     global.fetch = jest.fn()
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockFavorites) })
-      .mockResolvedValueOnce({ ok: true, status: 200 }) as any
+      .mockResolvedValueOnce({ ok: true, status: 200 }) as unknown as typeof fetch
 
     const user = userEvent.setup()
 
@@ -91,7 +109,7 @@ describe("FavoriteList", () => {
   it("affiche une erreur si la suppression échoue", async () => {
     global.fetch = jest.fn()
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockFavorites) })
-      .mockResolvedValueOnce({ ok: false, status: 500 }) as any
+      .mockResolvedValueOnce({ ok: false, status: 500 }) as unknown as typeof fetch
 
     const user = userEvent.setup()
 
