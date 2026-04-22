@@ -1,0 +1,39 @@
+# .semgrep.yml
+
+rules:
+  # Détection de secrets hardcodés dans le code source
+  - id: no-hardcoded-secrets
+    patterns:
+      - pattern: |
+          const $VAR = "..."
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: '(?i)(secret|password|token|api_key|apikey)'
+    message: |
+      Secret potentiellement hardcodé détecté dans $VAR.
+      Utiliser des variables d'environnement (process.env.MY_SECRET) à la place.
+    languages: [typescript, javascript]
+    severity: ERROR
+
+  # Détection de console.log contenant des données sensibles
+  - id: no-sensitive-console-log
+    patterns:
+      - pattern: console.log(..., $DATA, ...)
+      - metavariable-regex:
+          metavariable: $DATA
+          regex: '(?i)(password|token|secret|key|auth)'
+    message: |
+      Donnée potentiellement sensible loguée via console.log.
+      Supprimer ce log ou masquer la valeur avant de l'afficher.
+    languages: [typescript, javascript]
+    severity: WARNING
+
+  # Vérification que les variables d'environnement sensibles ne sont pas exposées
+  - id: no-env-exposure-in-response
+    pattern: |
+      NextResponse.json($OBJ)
+    message: |
+      Vérifier que cet objet de réponse n'expose pas de variables d'environnement sensibles
+      (token, secret, password, key). Ne jamais retourner de secrets dans les réponses HTTP.
+    languages: [typescript]
+    severity: WARNING

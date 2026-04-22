@@ -1,0 +1,12 @@
+# .semgrepignore
+
+# Fichiers de configuration — pas de logique métier
+next.config.ts
+jest.config.js
+playwright.config.ts
+
+# Dépendances et build
+node_modules/
+.next/
+coverage/
+reports/

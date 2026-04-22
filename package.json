@@ -10,7 +10,9 @@
     "test:unit": "jest --testPathPatterns=\"(components|lib)\"",
     "test:integration": "jest --testPathPatterns=\"app/api\"",
     "test:coverage": "jest --coverage",
-    "test:mutation": "stryker run stryker.config.json"
+    "test:mutation": "stryker run stryker.config.json",
+    "security:audit": "npm audit --audit-level=high",
+    "security:sast": "semgrep --config=p/javascript --config=p/typescript --config=p/nodejs --config=p/owasp-top-ten --error --json --output=semgrep-report.json . || semgrep --config=.semgrep.yml --error ."
   },
   "dependencies": {
     "@libsql/client": "^0.17.2",
