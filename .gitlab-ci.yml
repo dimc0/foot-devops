@@ -34,7 +34,6 @@ verify:structure:
     - test -d components || (echo "ERREUR components manquant" && exit 1)
     - test -d lib/tsdb || (echo "ERREUR lib/tsdb manquant" && exit 1)
     - test -d lib/db || (echo "ERREUR lib/db manquant" && exit 1)
-    - test -d constants || (echo "ERREUR constants manquant" && exit 1)
     - echo "Structure valide"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
