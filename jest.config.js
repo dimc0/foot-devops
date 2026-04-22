@@ -21,6 +21,8 @@ const config = {
     "!components/movies/MoviesClient.tsx", // orchestrateur UI, couvert manuellement
   ],
 
+  coverageProvider: "v8",
+
   // Formats de rapport générés
   coverageReporters: ["text", "lcov", "html", "cobertura"],
 
