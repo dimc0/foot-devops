@@ -15,7 +15,7 @@
   },
   "mutate": [
     "lib/db/favorites.ts",
-    "lib/tmdb/client.ts",
+    "lib/tsdb/client.ts",
     "app/api/favorites/route.ts",
     "app/api/favorites/[movieId]/route.ts",
     "app/api/movies/route.ts",
