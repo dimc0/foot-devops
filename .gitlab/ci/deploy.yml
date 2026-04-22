@@ -1,0 +1,42 @@
+# .gitlab/ci/deploy.yml
+
+# ── Build ─────────────────────────────────────────────────────────────────────
+
+# Vérification que le build de production compile sans erreur
+# avant de lancer le déploiement. Next.js vérifie le typage TypeScript
+# et les imports manquants à ce stade.
+build:
+  stage: build
+  script:
+    - npm run build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  artifacts:
+    # Le dossier .next/ est transmis au job deploy via artifacts
+    # pour éviter de rebuilder deux fois
+    paths:
+      - .next/
+    expire_in: 1 hour
+
+# ── Deploy Production ─────────────────────────────────────────────────────────
+
+deploy:production:
+  stage: deploy
+  # node:20 — l'image alpine n'a pas curl dont Vercel CLI a besoin
+  image: node:20
+  script:
+    - npm install -g vercel
+    # Récupère la configuration du projet Vercel en mode non-interactif (compatible CI)
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    # Build Vercel — utilise le .next/ transmis par le job build via les artifacts
+    - vercel build --prod --token=$VERCEL_TOKEN
+    # Déploiement du build précompilé en production
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  rules:
+    # Uniquement sur main — jamais sur les branches de feature
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  environment:
+    name: production
+    url: https://$CI_PROJECT_NAME.vercel.app
+  needs:
+    - build

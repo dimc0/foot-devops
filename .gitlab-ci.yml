@@ -1,12 +1,11 @@
 # .gitlab-ci.yml
 
-# .gitlab-ci.yml
-
 include:
   - local: .gitlab/ci/lint.yml
   - local: .gitlab/ci/tests.yml
   - local: .gitlab/ci/metrics.yml
   - local: .gitlab/ci/security.yml
+  - local: .gitlab/ci/deploy.yml
 
 stages:
   - verify
@@ -17,11 +16,8 @@ stages:
   - build
   - deploy
 
-# ... (le reste est inchangé)
-
 default:
   image: node:20-alpine
-  # Cache des node_modules entre les jobs — évite un npm ci complet à chaque job
   cache:
     key:
       files:
@@ -31,14 +27,14 @@ default:
   before_script:
     - npm ci
 
-# ── Vérification de structure ─────────────────────────────────────────────────
 verify:structure:
   stage: verify
   script:
     - test -d app/api || (echo "ERREUR app/api manquant" && exit 1)
     - test -d components || (echo "ERREUR components manquant" && exit 1)
-    - test -d lib/tsdb || (echo "ERREUR lib/tmdb manquant" && exit 1)
+    - test -d lib/tmdb || (echo "ERREUR lib/tmdb manquant" && exit 1)
     - test -d lib/db || (echo "ERREUR lib/db manquant" && exit 1)
+    - test -d constants || (echo "ERREUR constants manquant" && exit 1)
     - echo "Structure valide"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
