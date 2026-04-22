@@ -17,8 +17,8 @@
     "lib/db/favorites.ts",
     "lib/tsdb/client.ts",
     "app/api/favorites/route.ts",
-    "app/api/favorites/[movieId]/route.ts",
-    "app/api/movies/route.ts",
+    "app/api/favorites/[matchId]/route.ts",
+    "app/api/matches/route.ts",
     "app/api/health/route.ts"
   ],
   "reporters": ["html", "clear-text", "progress"],

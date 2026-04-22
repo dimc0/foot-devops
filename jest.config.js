@@ -18,7 +18,7 @@ const config = {
     "!**/*.d.ts",
     "!lib/db/schema.ts",        // initialisation des tables, pas de logique métier
     "!lib/db/client.ts",        // configuration de connexion uniquement
-    "!components/movies/MoviesClient.tsx", // orchestrateur UI, couvert manuellement
+    "!components/matches/MatchesClient.tsx", // orchestrateur UI, couvert manuellement
   ],
 
   coverageProvider: "v8",
